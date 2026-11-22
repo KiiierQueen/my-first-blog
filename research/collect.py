@@ -15,7 +15,7 @@ PER_QUERY = int(sys.argv[1]) if len(sys.argv) > 1 else 10
 
 def fetch(query, country, n):
     cmd = ["yt-dlp", "--skip-download", "--dump-json", "--no-warnings", "--ignore-errors",
-           "--geo-bypass-country", country, f"ytsearch{n}:{query}", "--dateafter", "today-60days"]
+           "--geo-bypass-country", country, f"ytsearch{n}:{query}"]
     out = subprocess.run(cmd, capture_output=True, text=True, timeout=600).stdout
     return [json.loads(l) for l in out.splitlines() if l.startswith("{")]
 
