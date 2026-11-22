@@ -11,7 +11,13 @@ MARKETS = {
     "TR": ("TR", "tr", ["yapay zeka hikaye", "yapay zeka araçları", "yapay zeka video"]),
     "PL": ("PL", "pl", ["historia AI", "narzędzia sztucznej inteligencji", "film AI"]),
     "ID": ("ID", "id", ["cerita buatan AI", "tools kecerdasan buatan", "video AI"]),
+    "CA": ("CA", "en", ["AI generated story", "AI tools tutorial", "AI video"]),
+    "GB": ("GB", "en", ["AI generated story", "AI tools tutorial", "AI video"]),
+    "NL": ("NL", "nl", ["AI verhaal", "AI tools tutorial", "AI video"]),
+    "SE": ("SE", "sv", ["AI berättelse", "AI verktyg tutorial", "AI video"]),
+    "CZ": ("CZ", "cs", ["AI příběh", "AI nástroje návod", "AI video"]),
 }
+if os.environ.get("ONLY"): MARKETS = {k: v for k, v in MARKETS.items() if k in os.environ["ONLY"].split(",")}
 def api(path, **p):
     p["key"] = KEY
     with urllib.request.urlopen(f"https://www.googleapis.com/youtube/v3/{path}?" + urllib.parse.urlencode(p), timeout=60) as r:
@@ -47,6 +53,6 @@ for mk, (region, lang, queries) in MARKETS.items():
             subs=subs, views=int(st.get("viewCount", 0)), likes=int(st.get("likeCount", 0)),
             duration=d, is_short=d <= 60, published=v["snippet"]["publishedAt"][:10]))
     print(mk, len(vids), flush=True)
-with open("videos.csv", "w", newline="", encoding="utf-8") as f:
+with open(os.environ.get("OUT","videos.csv"), "w", newline="", encoding="utf-8") as f:
     w = csv.DictWriter(f, fieldnames=list(rows[0])); w.writeheader(); w.writerows(rows)
 print("saved", len(rows))
